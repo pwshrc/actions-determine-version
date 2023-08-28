@@ -65,7 +65,7 @@ jobs:
     - name: Check out repository code
       uses: actions/checkout@v3
     - name: "Get artifact: version.json"
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: version.json
         path: ./out/
@@ -78,7 +78,7 @@ jobs:
           echo "::set-output name=$key::$($version.$key)"
         }
     - name: "Get artifact: release-notes.md"
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: release-notes.md
         path: ./out/
