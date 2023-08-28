@@ -166,7 +166,7 @@ runs:
         path: ${{ inputs.versionfile-name }}
     - name: "Get artifact: ${{ inputs.versionfile-artifact-name }}"
       if: inputs.mode == 'download'
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.versionfile-artifact-name }}
         path: ./
