@@ -1,0 +1,180 @@
+
+name: "Determine Version"
+description: "Determines the version of a build-in-progress by invoking GitVersion and saving an artifact of the result."
+inputs:
+  mode:
+    description: "One of 'upload' or 'download'."
+    required: true
+  gitversion-version:
+    description: "The version of GitVersion to use."
+    required: true
+    default: "5.12"
+  versionfile-name:
+    description: "The name of the JSON file containing the generated version information."
+    required: true
+    default: 'version.json'
+  versionfile-artifact-name:
+    description: "The name of the artifact to create which contains the JSON file of the generated version information."
+    required: true
+    default: 'version.json'
+outputs:
+  Major:
+    description: "Major"
+    value: ${{ steps.gitversion_vars.outputs.Major }}
+  Minor:
+    description: "Minor"
+    value: ${{ steps.gitversion_vars.outputs.Minor }}
+  Patch:
+    description: "Patch"
+    value: ${{ steps.gitversion_vars.outputs.Patch }}
+  PreReleaseTag:
+    description: "PreReleaseTag"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseTag }}
+  PreReleaseTagWithDash:
+    description: "PreReleaseTagWithDash"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseTagWithDash }}
+  PreReleaseLabel:
+    description: "PreReleaseLabel"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseLabel }}
+  PreReleaseLabelWithDash:
+    description: "PreReleaseLabelWithDash"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseLabelWithDash }}
+  PreReleaseNumber:
+    description: "PreReleaseNumber"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseNumber }}
+  WeightedPreReleaseNumber:
+    description: "WeightedPreReleaseNumber"
+    value: ${{ steps.gitversion_vars.outputs.WeightedPreReleaseNumber }}
+  BuildMetaData:
+    description: "BuildMetaData"
+    value: ${{ steps.gitversion_vars.outputs.BuildMetaData }}
+  BuildMetaDataPadded:
+    description: "BuildMetaDataPadded"
+    value: ${{ steps.gitversion_vars.outputs.BuildMetaDataPadded }}
+  FullBuildMetaData:
+    description: "FullBuildMetaData"
+    value: ${{ steps.gitversion_vars.outputs.FullBuildMetaData }}
+  MajorMinorPatch:
+    description: "MajorMinorPatch"
+    value: ${{ steps.gitversion_vars.outputs.MajorMinorPatch }}
+  SemVer:
+    description: "SemVer"
+    value: ${{ steps.gitversion_vars.outputs.SemVer }}
+  LegacySemVer:
+    description: "LegacySemVer"
+    value: ${{ steps.gitversion_vars.outputs.LegacySemVer }}
+  LegacySemVerPadded:
+    description: "LegacySemVerPadded"
+    value: ${{ steps.gitversion_vars.outputs.LegacySemVerPadded }}
+  AssemblySemVer:
+    description: "AssemblySemVer"
+    value: ${{ steps.gitversion_vars.outputs.AssemblySemVer }}
+  AssemblySemFileVer:
+    description: "AssemblySemFileVer"
+    value: ${{ steps.gitversion_vars.outputs.AssemblySemFileVer }}
+  FullSemVer:
+    description: "FullSemVer"
+    value: ${{ steps.gitversion_vars.outputs.FullSemVer }}
+  InformationalVersion:
+    description: "InformationalVersion"
+    value: ${{ steps.gitversion_vars.outputs.InformationalVersion }}
+  BranchName:
+    description: "BranchName"
+    value: ${{ steps.gitversion_vars.outputs.BranchName }}
+  EscapedBranchName:
+    description: "EscapedBranchName"
+    value: ${{ steps.gitversion_vars.outputs.EscapedBranchName }}
+  Sha:
+    description: "Sha"
+    value: ${{ steps.gitversion_vars.outputs.Sha }}
+  ShortSha:
+    description: "ShortSha"
+    value: ${{ steps.gitversion_vars.outputs.ShortSha }}
+  NuGetVersionV2:
+    description: "NuGetVersionV2"
+    value: ${{ steps.gitversion_vars.outputs.NuGetVersionV2 }}
+  NuGetVersion:
+    description: "NuGetVersion"
+    value: ${{ steps.gitversion_vars.outputs.NuGetVersion }}
+  NuGetPreReleaseTagV2:
+    description: "NuGetPreReleaseTagV2"
+    value: ${{ steps.gitversion_vars.outputs.NuGetPreReleaseTagV2 }}
+  NuGetPreReleaseTag:
+    description: "NuGetPreReleaseTag"
+    value: ${{ steps.gitversion_vars.outputs.NuGetPreReleaseTag }}
+  VersionSourceSha:
+    description: "VersionSourceSha"
+    value: ${{ steps.gitversion_vars.outputs.VersionSourceSha }}
+  CommitsSinceVersionSource:
+    description: "CommitsSinceVersionSource"
+    value: ${{ steps.gitversion_vars.outputs.CommitsSinceVersionSource }}
+  CommitsSinceVersionSourcePadded:
+    description: "CommitsSinceVersionSourcePadded"
+    value: ${{ steps.gitversion_vars.outputs.CommitsSinceVersionSourcePadded }}
+  UncommittedChanges:
+    description: "UncommittedChanges"
+    value: ${{ steps.gitversion_vars.outputs.UncommittedChanges }}
+  CommitDate:
+    description: "CommitDate"
+    value: ${{ steps.gitversion_vars.outputs.CommitDate }}
+runs:
+  using: "composite"
+  steps:
+    - name: Cache dotnet tools
+      if: inputs.mode == 'upload'
+      id: cacher
+      uses: actions/cache@v3
+      with:
+        path: |
+          ${{ env.HOME }}/.dotnet/tools
+          ${{ env.USERPROFILE }}\\.dotnet\\tools
+        key: ${{ runner.os }}-dotnet-tools-${{ hashFiles('**/global.json') }}
+    - name: dotnet tool install -g GitVersion.Tool
+      if: (steps.cacher.outputs.cache-hit != 'true') && (inputs.mode == 'upload')
+      shell: pwsh
+      run: dotnet tool install --global GitVersion.Tool --version ${{ inputs.gitversion-version }}
+    - name: Check out repository full history
+      if: inputs.mode == 'upload'
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0  # GitVersion requires the full history to calculate the version.
+    - name: Show GitVersion configuration
+      if: inputs.mode == 'upload'
+      shell: pwsh
+      run: dotnet-gitversion /showconfig
+    - name: Show GitVersion configuration
+      if: inputs.mode == 'upload'
+      shell: pwsh
+      run: |
+        dotnet-gitversion /showconfig
+    - name: Determine version
+      if: inputs.mode == 'upload'
+      shell: pwsh
+      run: |
+        dotnet-gitversion /output json | Out-File -Path ${{ inputs.versionfile-name }} -Encoding UTF8
+        [int] $gitversionExitCode = $LASTEXITCODE
+        if ($gitversionExitCode -ne 0) {
+          Write-Host "GitVersion failed. Re-running with diagnostic verbosity."
+          dotnet-gitversion /output json /verbosity diagnostic
+          exit $gitversionExitCode
+        }
+    - name: "Create artifact: ${{ inputs.versionfile-artifact-name }}"
+      if: inputs.mode == 'upload'
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ inputs.versionfile-artifact-name }}
+        path: ${{ inputs.versionfile-name }}
+    - name: "Get artifact: ${{ inputs.versionfile-artifact-name }}"
+      if: inputs.mode == 'download'
+      uses: actions/download-artifact@v2
+      with:
+        name: ${{ inputs.versionfile-artifact-name }}
+        path: ./
+    - name: Populate version variables
+      id: gitversion_vars
+      shell: pwsh
+      run: |
+        [object] $version = Get-Content -Path ${{ inputs.versionfile-name }} | ConvertFrom-Json
+        foreach ($key in $version.PSObject.Properties.Name) {
+          echo "::set-output name=$key::$($version.$key)"
+        }
