@@ -89,10 +89,10 @@ jobs:
         name: release-notes.md
         path: ./out/release-notes.md
 
-    test-changes:
-      name: Test Changes
-      runs-on: ubuntu-latest
-      steps:
-        - shell: bash
-          run: |
-            echo "LGTM."
+  test-changes:
+    name: Test Changes
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          echo "LGTM."
