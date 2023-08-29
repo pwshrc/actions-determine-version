@@ -8,11 +8,15 @@ inputs:
   gitversion-version:
     description: "The version of GitVersion to use."
     required: true
-    default: "5.12"
+    default: '5.12'
   versionfile-name:
     description: "The name of the JSON file containing the generated version information."
     required: true
     default: 'version.json'
+  versionfile-path:
+    description: "The path of the directory containing the JSON file of the generated version information."
+    required: true
+    default: './'
   versionfile-artifact-name:
     description: "The name of the artifact to create which contains the JSON file of the generated version information."
     required: true
@@ -147,11 +151,24 @@ runs:
       shell: pwsh
       run: |
         dotnet-gitversion /showconfig
+    - name: Calculate file path
+      id: calculate_versionfile_filepath
+      shell: pwsh
+      env:
+        filename: ${{ inputs.versionfile-name }}
+        directory: ${{ inputs.versionfile-path }}
+      run: |
+        [string] $filePath = Join-Path $Env:filename $Env:directory
+        echo "::set-output name=filePath::$filePath"
     - name: Determine version
       if: inputs.mode == 'upload'
+      id: generate_version_file
       shell: pwsh
+      env:
+        filePath: ${{ steps.calculate_versionfile_filepath.outputs.filePath }}
       run: |
-        dotnet-gitversion /output json | Out-File -Path ${{ inputs.versionfile-name }} -Encoding UTF8
+        mkdir (Split-Path $Env:filePath -Parent) -Force -ErrorAction SilentlyContinue
+        dotnet-gitversion /output json | Out-File -Path $Env:filePath -Encoding UTF8
         [int] $gitversionExitCode = $LASTEXITCODE
         if ($gitversionExitCode -ne 0) {
           Write-Host "GitVersion failed. Re-running with diagnostic verbosity."
@@ -163,19 +180,21 @@ runs:
       uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.versionfile-artifact-name }}
-        path: ${{ inputs.versionfile-name }}
+        path: ${{ inputs.versionfile-path }}
         if-no-files-found: error
     - name: "Get artifact: ${{ inputs.versionfile-artifact-name }}"
       if: inputs.mode == 'download'
       uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.versionfile-artifact-name }}
-        path: ./
+        path: ${{ inputs.versionfile-path }}
     - name: Populate version variables
       id: gitversion_vars
       shell: pwsh
+      env:
+        filePath: ${{ steps.calculate_versionfile_filepath.outputs.filePath }}
       run: |
-        [object] $version = Get-Content -Path ${{ inputs.versionfile-name }} | ConvertFrom-Json
+        [object] $version = Get-Content -Path $Env:filePath | ConvertFrom-Json
         foreach ($key in $version.PSObject.Properties.Name) {
           echo "::set-output name=$key::$($version.$key)"
         }
