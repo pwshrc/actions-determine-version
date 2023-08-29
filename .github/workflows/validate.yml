@@ -50,6 +50,7 @@ jobs:
       with:
         name: version.json
         path: ./out/version.json
+        if-no-files-found: error
 
   create-releasenotes:
     name: Create Release Notes
@@ -88,6 +89,7 @@ jobs:
       with:
         name: release-notes.md
         path: ./out/release-notes.md
+        if-no-files-found: error
 
   test-changes:
     name: Test Changes

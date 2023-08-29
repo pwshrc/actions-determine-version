@@ -48,6 +48,7 @@ jobs:
         with:
           name: version.json
           path: ./version/version.json
+          if-no-files-found: error
       - name: Unzip release-notes.md
         shell: pwsh
         run: Expand-Archive -Path "release-notes.md.zip" -DestinationPath ./release-notes/
@@ -56,6 +57,7 @@ jobs:
         with:
           name: release-notes.md
           path: ./release-notes/release-notes.md
+          if-no-files-found: error
 
   publish-github-release:
     name: Publish GitHub Release

@@ -164,6 +164,7 @@ runs:
       with:
         name: ${{ inputs.versionfile-artifact-name }}
         path: ${{ inputs.versionfile-name }}
+        if-no-files-found: error
     - name: "Get artifact: ${{ inputs.versionfile-artifact-name }}"
       if: inputs.mode == 'download'
       uses: actions/download-artifact@v3
