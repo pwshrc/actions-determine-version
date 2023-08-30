@@ -167,8 +167,8 @@ runs:
       id: calculate_versionjson_filepath
       shell: pwsh
       env:
-        filename: ${{ inputs.versionjson-name }}
-        directory: ${{ inputs.versionjson-path }}
+        filename: "${{ inputs.versionjson-name }}"
+        directory: "${{ inputs.versionjson-path }}"
       run: |
         [string] $filePath = Join-Path $Env:directory $Env:filename
         echo "::set-output name=filepath::$filePath"
@@ -177,7 +177,7 @@ runs:
       id: generate_version_file
       shell: pwsh
       env:
-        filePath: ${{ steps.calculate_versionjson_filepath.outputs.filepath }}
+        filePath: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
       run: |
         New-Item (Split-Path $Env:filePath -Parent) -ItemType Directory -Force -ErrorAction SilentlyContinue
         dotnet-gitversion /output json | Out-File -Path $Env:filePath -Encoding UTF8
@@ -191,20 +191,20 @@ runs:
       if: inputs.mode == 'upload'
       uses: actions/upload-artifact@v3
       with:
-        name: ${{ inputs.versionjson-artifact-name }}
-        path: ${{ inputs.versionjson-path }}
+        name: "${{ inputs.versionjson-artifact-name }}"
+        path: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
         if-no-files-found: error
     - name: "Get artifact: ${{ inputs.versionjson-artifact-name }}"
       if: inputs.mode == 'download'
       uses: actions/download-artifact@v3
       with:
-        name: ${{ inputs.versionjson-artifact-name }}
-        path: ${{ inputs.versionjson-path }}
+        name: "${{ inputs.versionjson-artifact-name }}"
+        path: "${{ inputs.versionjson-path }}"
     - name: Populate version variables
       id: gitversion_vars
       shell: pwsh
       env:
-        filePath: ${{ steps.calculate_versionjson_filepath.outputs.filepath }}
+        filePath: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
       run: |
         [object] $version = Get-Content -Path $Env:filePath | ConvertFrom-Json
         foreach ($key in $version.PSObject.Properties.Name) {
