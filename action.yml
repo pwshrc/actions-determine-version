@@ -179,7 +179,7 @@ runs:
       env:
         filePath: ${{ steps.calculate_versionjson_filepath.outputs.filepath }}
       run: |
-        mkdir (Split-Path $Env:filePath -Parent) -Force -ErrorAction SilentlyContinue
+        New-Item (Split-Path $Env:filePath -Parent) -ItemType Directory -Force -ErrorAction SilentlyContinue
         dotnet-gitversion /output json | Out-File -Path $Env:filePath -Encoding UTF8
         [int] $gitversionExitCode = $LASTEXITCODE
         if ($gitversionExitCode -ne 0) {
