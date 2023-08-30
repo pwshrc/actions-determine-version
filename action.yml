@@ -170,7 +170,7 @@ runs:
         filename: ${{ inputs.versionjson-name }}
         directory: ${{ inputs.versionjson-path }}
       run: |
-        [string] $filePath = Join-Path $Env:filename $Env:directory
+        [string] $filePath = Join-Path $Env:directory $Env:filename
         echo "::set-output name=filepath::$filePath"
     - name: Determine version
       if: inputs.mode == 'upload'
