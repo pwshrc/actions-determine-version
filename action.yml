@@ -139,7 +139,7 @@ runs:
     - name: Cache dotnet tools
       if: inputs.mode == 'upload'
       id: cacher
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ${{ env.HOME }}/.dotnet/tools
