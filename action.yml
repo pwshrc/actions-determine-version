@@ -8,7 +8,7 @@ inputs:
   gitversion-version:
     description: "The version of GitVersion to use."
     required: true
-    default: '5.12'
+    default: '6.1'
   versionjson-name:
     description: "The name of the JSON file containing the generated version information."
     required: true
@@ -22,78 +22,121 @@ inputs:
     required: true
     default: 'version-json'
 outputs:
-  Major:
-    description: "Major"
-    value: ${{ steps.gitversion_vars.outputs.Major }}
-  Minor:
-    description: "Minor"
-    value: ${{ steps.gitversion_vars.outputs.Minor }}
-  Patch:
-    description: "Patch"
-    value: ${{ steps.gitversion_vars.outputs.Patch }}
-  PreReleaseTag:
-    description: "PreReleaseTag"
-    value: ${{ steps.gitversion_vars.outputs.PreReleaseTag }}
-  PreReleaseTagWithDash:
-    description: "PreReleaseTagWithDash"
-    value: ${{ steps.gitversion_vars.outputs.PreReleaseTagWithDash }}
-  PreReleaseLabel:
-    description: "PreReleaseLabel"
-    value: ${{ steps.gitversion_vars.outputs.PreReleaseLabel }}
-  PreReleaseLabelWithDash:
-    description: "PreReleaseLabelWithDash"
-    value: ${{ steps.gitversion_vars.outputs.PreReleaseLabelWithDash }}
-  PreReleaseNumber:
-    description: "PreReleaseNumber"
-    value: ${{ steps.gitversion_vars.outputs.PreReleaseNumber }}
-  WeightedPreReleaseNumber:
-    description: "WeightedPreReleaseNumber"
-    value: ${{ steps.gitversion_vars.outputs.WeightedPreReleaseNumber }}
+  #
+  # Commonplace GitVersion outputs.
+  #
+  AssemblySemFileVer:
+    description: "AssemblySemFileVer"
+    value: ${{ steps.gitversion_vars.outputs.AssemblySemFileVer }}
+    # e.g. "0.3.16.0"
+  AssemblySemVer:
+    description: "AssemblySemVer"
+    value: ${{ steps.gitversion_vars.outputs.AssemblySemVer }}
+    # e.g. "0.3.16.0"
+  BranchName:
+    description: "BranchName"
+    value: ${{ steps.gitversion_vars.outputs.BranchName }}
+    # e.g. "20241215-dependency-updates-pt1"
   BuildMetaData:
     description: "BuildMetaData"
     value: ${{ steps.gitversion_vars.outputs.BuildMetaData }}
-  BuildMetaDataPadded:
-    description: "BuildMetaDataPadded"
-    value: ${{ steps.gitversion_vars.outputs.BuildMetaDataPadded }}
+    # e.g. "7"
+  CommitDate:
+    description: "CommitDate"
+    value: ${{ steps.gitversion_vars.outputs.CommitDate }}
+    # e.g. "2024-01-09"
+  CommitsSinceVersionSource:
+    description: "CommitsSinceVersionSource"
+    value: ${{ steps.gitversion_vars.outputs.CommitsSinceVersionSource }}
+    # e.g. "7"
+  EscapedBranchName:
+    description: "EscapedBranchName"
+    value: ${{ steps.gitversion_vars.outputs.EscapedBranchName }}
+    # e.g. "20241215-dependency-updates-pt1"
   FullBuildMetaData:
     description: "FullBuildMetaData"
     value: ${{ steps.gitversion_vars.outputs.FullBuildMetaData }}
+    # e.g. "7.Branch.20241215-dependency-updates-pt1.Sha.3614bd87c7c1b8d71473989432771cba257bcd00"
+  FullSemVer:
+    description: "FullSemVer"
+    value: ${{ steps.gitversion_vars.outputs.FullSemVer }}
+    # e.g. "0.3.16-20241215-dependency-updates-pt1.1+7"
+  InformationalVersion:
+    description: "InformationalVersion"
+    value: ${{ steps.gitversion_vars.outputs.InformationalVersion }}
+    # e.g. "0.3.16-20241215-dependency-updates-pt1.1+7.Branch.20241215-dependency-updates-pt1.Sha.3614bd87c7c1b8d71473989432771cba257bcd00"
+  Major:
+    description: "Major"
+    value: ${{ steps.gitversion_vars.outputs.Major }}
+    # e.g. "0"
   MajorMinorPatch:
     description: "MajorMinorPatch"
     value: ${{ steps.gitversion_vars.outputs.MajorMinorPatch }}
+    # e.g. "0.3.16"
+  Minor:
+    description: "Minor"
+    value: ${{ steps.gitversion_vars.outputs.Minor }}
+    # e.g. "3"
+  Patch:
+    description: "Patch"
+    value: ${{ steps.gitversion_vars.outputs.Patch }}
+    # e.g. "16"
+  PreReleaseLabel:
+    description: "PreReleaseLabel"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseLabel }}
+    # TODO: "20241215-dependency-updates-pt1"
+  PreReleaseLabelWithDash:
+    description: "PreReleaseLabelWithDash"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseLabelWithDash }}
+    # TODO: "-20241215-dependency-updates-pt1"
+  PreReleaseNumber:
+    description: "PreReleaseNumber"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseNumber }}
+    # e.g. "1"
+  PreReleaseTag:
+    description: "PreReleaseTag"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseTag }}
+    # e.g. "20241215-dependency-updates-pt1.1"
+  PreReleaseTagWithDash:
+    description: "PreReleaseTagWithDash"
+    value: ${{ steps.gitversion_vars.outputs.PreReleaseTagWithDash }}
+    # e.g. "-20241215-dependency-updates-pt1.1"
   SemVer:
     description: "SemVer"
     value: ${{ steps.gitversion_vars.outputs.SemVer }}
+    # e.g. "0.3.16-20241215-dependency-updates-pt1.1"
+  Sha:
+    description: "Sha"
+    value: ${{ steps.gitversion_vars.outputs.Sha }}
+    # e.g. "3614bd87c7c1b8d71473989432771cba257bcd00"
+  ShortSha:
+    description: "ShortSha"
+    value: ${{ steps.gitversion_vars.outputs.ShortSha }}
+    # e.g. "3614bd8"
+  UncommittedChanges:
+    description: "UncommittedChanges"
+    value: ${{ steps.gitversion_vars.outputs.UncommittedChanges }}
+    # e.g. "1"
+  VersionSourceSha:
+    description: "VersionSourceSha"
+    value: ${{ steps.gitversion_vars.outputs.VersionSourceSha }}
+    # TODO: "770b1b278a3c681d37436a15352009d3a7cee1d1"
+  WeightedPreReleaseNumber:
+    description: "WeightedPreReleaseNumber"
+    value: ${{ steps.gitversion_vars.outputs.WeightedPreReleaseNumber }}
+    # e.g. "1"
+  #
+  # We've attempted a backwards-compatible implementation of these remaining "GitVersion" outputs. Correctness TBD.
+  #
+  BuildMetaDataPadded:
+    description: "BuildMetaDataPadded"
+    value: ${{ steps.gitversion_vars.outputs.BuildMetaDataPadded }}
   LegacySemVer:
     description: "LegacySemVer"
     value: ${{ steps.gitversion_vars.outputs.LegacySemVer }}
   LegacySemVerPadded:
     description: "LegacySemVerPadded"
     value: ${{ steps.gitversion_vars.outputs.LegacySemVerPadded }}
-  AssemblySemVer:
-    description: "AssemblySemVer"
-    value: ${{ steps.gitversion_vars.outputs.AssemblySemVer }}
-  AssemblySemFileVer:
-    description: "AssemblySemFileVer"
-    value: ${{ steps.gitversion_vars.outputs.AssemblySemFileVer }}
-  FullSemVer:
-    description: "FullSemVer"
-    value: ${{ steps.gitversion_vars.outputs.FullSemVer }}
-  InformationalVersion:
-    description: "InformationalVersion"
-    value: ${{ steps.gitversion_vars.outputs.InformationalVersion }}
-  BranchName:
-    description: "BranchName"
-    value: ${{ steps.gitversion_vars.outputs.BranchName }}
-  EscapedBranchName:
-    description: "EscapedBranchName"
-    value: ${{ steps.gitversion_vars.outputs.EscapedBranchName }}
-  Sha:
-    description: "Sha"
-    value: ${{ steps.gitversion_vars.outputs.Sha }}
-  ShortSha:
-    description: "ShortSha"
-    value: ${{ steps.gitversion_vars.outputs.ShortSha }}
   NuGetVersionV2:
     description: "NuGetVersionV2"
     value: ${{ steps.gitversion_vars.outputs.NuGetVersionV2 }}
@@ -106,21 +149,12 @@ outputs:
   NuGetPreReleaseTag:
     description: "NuGetPreReleaseTag"
     value: ${{ steps.gitversion_vars.outputs.NuGetPreReleaseTag }}
-  VersionSourceSha:
-    description: "VersionSourceSha"
-    value: ${{ steps.gitversion_vars.outputs.VersionSourceSha }}
-  CommitsSinceVersionSource:
-    description: "CommitsSinceVersionSource"
-    value: ${{ steps.gitversion_vars.outputs.CommitsSinceVersionSource }}
   CommitsSinceVersionSourcePadded:
     description: "CommitsSinceVersionSourcePadded"
     value: ${{ steps.gitversion_vars.outputs.CommitsSinceVersionSourcePadded }}
-  UncommittedChanges:
-    description: "UncommittedChanges"
-    value: ${{ steps.gitversion_vars.outputs.UncommittedChanges }}
-  CommitDate:
-    description: "CommitDate"
-    value: ${{ steps.gitversion_vars.outputs.CommitDate }}
+  #
+  # Miscellaneous helpful outputs.
+  #
   versionjson-name:
     description: "The name of the JSON file containing the generated version information."
     value: ${{ inputs.versionjson-name }}
@@ -139,7 +173,7 @@ runs:
     - name: Cache dotnet tools
       if: inputs.mode == 'upload'
       id: cacher
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           ${{ env.HOME }}/.dotnet/tools
@@ -158,11 +192,6 @@ runs:
       if: inputs.mode == 'upload'
       shell: pwsh
       run: dotnet-gitversion /showconfig
-    - name: Show GitVersion configuration
-      if: inputs.mode == 'upload'
-      shell: pwsh
-      run: |
-        dotnet-gitversion /showconfig
     - name: Calculate file path
       id: calculate_versionjson_filepath
       shell: pwsh
@@ -179,24 +208,77 @@ runs:
       env:
         filePath: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
       run: |
-        New-Item (Split-Path $Env:filePath -Parent) -ItemType Directory -Force -ErrorAction SilentlyContinue
-        dotnet-gitversion /output json | Out-File -Path $Env:filePath -Encoding UTF8
+        New-Item (Split-Path $Env:filePath -Parent) -ItemType Directory -Force -ErrorAction SilentlyContinue | Out-Null
+        dotnet-gitversion /output json | Out-File -FilePath $Env:filePath -Encoding UTF8
         [int] $gitversionExitCode = $LASTEXITCODE
         if ($gitversionExitCode -ne 0) {
           Write-Host "GitVersion failed. Re-running with diagnostic verbosity."
           dotnet-gitversion /output json /verbosity diagnostic
           exit $gitversionExitCode
         }
+    - name: Elaborate version
+      if: inputs.mode == 'upload'
+      id: elaborate_version_file
+      shell: pwsh
+      env:
+        filePath: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
+      run: |
+        # Load the version information we just generated.
+        $versionInfo = Get-Content -LiteralPath $Env:filePath -Encoding UTF8 | ConvertFrom-Json
+
+        #
+        # Backfill legacy outputs.
+        #
+
+        [string] $paddedNumberFormatPattern = "0000"
+
+        [string] $BuildMetaDataPadded = $versionInfo.BuildMetaData -eq $null ? $null : ($versionInfo.BuildMetaData -as [int])?.ToString($paddedNumberFormatPattern)
+
+        # TODO: Verify 'PreReleaseNumber' is correct suffix. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
+        [Nullable[int]] $preReleaseNumber = $versionInfo.PreReleaseNumber -as [int]
+        if ($preReleaseNumber -or $versionInfo.PreReleaseLabel) {
+          [string] $NuGetPreReleaseTagV2 = $versionInfo.PreReleaseLabel + $preReleaseNumber.ToString($paddedNumberFormatPattern)
+        } else {
+          [string] $NuGetPreReleaseTagV2 = ""
+        }
+        # TODO: Determine correct provenance for 'NuGetPreReleaseTag'. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
+        [string] $NuGetPreReleaseTag = $NuGetPreReleaseTagV2
+        if ($preReleaseNumber) {
+          [string] $LegacySemVer = $versionInfo.MajorMinorPatch + "-" + $versionInfo.PreReleaseLabel + $preReleaseNumber
+          [string] $LegacySemVerPadded = $versionInfo.MajorMinorPatch + "-" + $versionInfo.PreReleaseLabel + $preReleaseNumber.ToString($paddedNumberFormatPattern)
+        } else {
+          [string] $LegacySemVer = $versionInfo.MajorMinorPatch
+          [string] $LegacySemVerPadded = $versionInfo.MajorMinorPatch
+        }
+        # TODO: Determine correct provenance for 'NuGetVersion' and 'NuGetVersionV2'. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
+        [string] $NuGetVersionV2 = $LegacySemVerPadded
+        [string] $NuGetVersion = $LegacySemVerPadded
+
+        [string] $CommitsSinceVersionSourcePadded = ($versionInfo.CommitsSinceVersionSource -as [int]).ToString($paddedNumberFormatPattern)
+
+        $versionInfo | Add-Member -NotePropertyMembers @{
+          'BuildMetaDataPadded'= $BuildMetaDataPadded;
+          'LegacySemVer'= $LegacySemVer;
+          'LegacySemVerPadded'= $LegacySemVerPadded;
+          'NuGetVersionV2'= $NuGetVersionV2;
+          'NuGetVersion'= $NuGetVersion;
+          'NuGetPreReleaseTagV2'= $NuGetPreReleaseTagV2;
+          'NuGetPreReleaseTag'= $NuGetPreReleaseTag;
+          'CommitsSinceVersionSourcePadded'= $CommitsSinceVersionSourcePadded;
+        }
+
+        # Save the updated version information.
+        $versionInfo | ConvertTo-Json | Out-File -FilePath $Env:filePath -Encoding UTF8 -Force
     - name: "Create artifact: ${{ inputs.versionjson-artifact-name }}"
       if: inputs.mode == 'upload'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: "${{ inputs.versionjson-artifact-name }}"
         path: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
         if-no-files-found: error
     - name: "Get artifact: ${{ inputs.versionjson-artifact-name }}"
       if: inputs.mode == 'download'
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: "${{ inputs.versionjson-artifact-name }}"
         path: "${{ inputs.versionjson-path }}"
