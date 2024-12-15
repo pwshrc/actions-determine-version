@@ -243,7 +243,7 @@ runs:
         }
         # TODO: Determine correct provenance for 'NuGetPreReleaseTag'. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
         [string] $NuGetPreReleaseTag = $NuGetPreReleaseTagV2
-        if ($preReleaseNumber) {
+        if ($preReleaseNumber -and $versionInfo.PreReleaseLabel) {
           [string] $LegacySemVer = $versionInfo.MajorMinorPatch + "-" + $versionInfo.PreReleaseLabel + $preReleaseNumber
           [string] $LegacySemVerPadded = $versionInfo.MajorMinorPatch + "-" + $versionInfo.PreReleaseLabel + $preReleaseNumber.ToString($paddedNumberFormatPattern)
         } else {
