@@ -234,10 +234,11 @@ runs:
 
         [string] $BuildMetaDataPadded = $versionInfo.BuildMetaData -eq $null ? $null : ($versionInfo.BuildMetaData -as [int])?.ToString($paddedNumberFormatPattern)
 
+        [string] $prereleaseLabelShortened = ($versionInfo.PreReleaseLabel.Length -gt 16) ? $versionInfo.PreReleaseLabel.Substring(0, 16) : $versionInfo.PreReleaseLabel
         # TODO: Verify 'PreReleaseNumber' is correct suffix. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
         [Nullable[int]] $preReleaseNumber = $versionInfo.PreReleaseNumber -as [int]
-        if ($preReleaseNumber -or $versionInfo.PreReleaseLabel) {
-          [string] $NuGetPreReleaseTagV2 = $versionInfo.PreReleaseLabel + $preReleaseNumber.ToString($paddedNumberFormatPattern)
+        if ($preReleaseNumber -or $prereleaseLabelShortened) {
+          [string] $NuGetPreReleaseTagV2 = $prereleaseLabelShortened + $preReleaseNumber.ToString($paddedNumberFormatPattern)
         } else {
           [string] $NuGetPreReleaseTagV2 = ""
         }
@@ -245,13 +246,13 @@ runs:
         [string] $NuGetPreReleaseTag = $NuGetPreReleaseTagV2
         if ($preReleaseNumber -and $versionInfo.PreReleaseLabel) {
           [string] $LegacySemVer = $versionInfo.MajorMinorPatch + "-" + $versionInfo.PreReleaseLabel + $preReleaseNumber
-          [string] $LegacySemVerPadded = $versionInfo.MajorMinorPatch + "-" + $versionInfo.PreReleaseLabel + $preReleaseNumber.ToString($paddedNumberFormatPattern)
+          [string] $LegacySemVerPadded = $versionInfo.MajorMinorPatch + "-" + $prereleaseLabelShortened + $preReleaseNumber.ToString($paddedNumberFormatPattern)
         } else {
           [string] $LegacySemVer = $versionInfo.MajorMinorPatch
           [string] $LegacySemVerPadded = $versionInfo.MajorMinorPatch
         }
-        # TODO: Determine correct provenance for 'NuGetVersion' and 'NuGetVersionV2'. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
         [string] $NuGetVersionV2 = $LegacySemVerPadded
+        # TODO: Determine correct provenance for 'NuGetVersion'. Ambiguous from historical documentation found at https://github.com/GitTools/GitVersion/blob/v4.0.0/docs/more-info/variables.md.
         [string] $NuGetVersion = $LegacySemVerPadded
 
         [string] $CommitsSinceVersionSourcePadded = ($versionInfo.CommitsSinceVersionSource -as [int]).ToString($paddedNumberFormatPattern)
