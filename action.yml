@@ -185,7 +185,7 @@ runs:
       run: dotnet tool install --global GitVersion.Tool --version ${{ inputs.gitversion-version }}
     - name: Check out repository full history
       if: inputs.mode == 'upload'
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         fetch-depth: 0  # GitVersion requires the full history to calculate the version.
     - name: Show GitVersion configuration
