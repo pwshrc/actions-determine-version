@@ -272,14 +272,14 @@ runs:
         $versionInfo | ConvertTo-Json | Out-File -FilePath $Env:filePath -Encoding UTF8 -Force
     - name: "Create artifact: ${{ inputs.versionjson-artifact-name }}"
       if: inputs.mode == 'upload'
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: "${{ inputs.versionjson-artifact-name }}"
         path: "${{ steps.calculate_versionjson_filepath.outputs.filepath }}"
         if-no-files-found: error
     - name: "Get artifact: ${{ inputs.versionjson-artifact-name }}"
       if: inputs.mode == 'download'
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: "${{ inputs.versionjson-artifact-name }}"
         path: "${{ inputs.versionjson-path }}"
